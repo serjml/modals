@@ -35,17 +35,11 @@ const modals = () => {
 
   const showModalByTime = (selector, time) => {
     setTimeout(() => {
-      let display;
-
-      document.querySelectorAll('[data-modal]').forEach((modal) => {
-        if (getComputedStyle(modal).display !== 'none') {
-          display = 'block';
-        }
-      });
-
-      if (!display) {
+      if (!modalOpened()) {
         document.querySelector(selector).style.display = 'block';
         document.body.style.overflow = 'hidden';
+        document.body.style.marginRight = `${scroll}px`;
+        console.log('first');
       }
     }, time);
   };
@@ -60,6 +54,19 @@ const modals = () => {
     document.body.style.overflow = '';
     document.body.style.marginRight = `0px`;
   };
+  
+  
+  function openByScroll(selector) {
+    window.addEventListener('scroll', () => {
+      if (
+        !modalOpened() &&
+        window.pageYOffset + document.documentElement.clientHeight >=
+          document.documentElement.scrollHeight
+      ) {
+        document.querySelector(selector).click();
+      }
+    });
+  }
 
   function calcScroll() {
     let div = document.createElement('div');
@@ -72,5 +79,13 @@ const modals = () => {
     div.remove();
 
     return scrollWidth;
+  }
+  
+  function modalOpened() {
+    let display;
+    document.querySelectorAll('[data-modal]').forEach((modal) => {
+      display = modal.classList.contains('opened');
+    });
+    return display;
   }
 };
